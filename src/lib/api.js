@@ -6,14 +6,9 @@ export const init = (stageInstance) =>{
 };
 
 
-/**
- * @todo:
- * call get with the correct url
- * https://api.themoviedb.org/3/movie/popular
- * and return the data
- */
 export const getMovies = async()=> {
-
+  console.log("get movies");
+  return get('https://api.themoviedb.org/3/movie/popular?api_key='+apiKey);
 };
 
 const get = (url)=> {
@@ -23,4 +18,3 @@ const get = (url)=> {
         return response.json();
     })
 };
-

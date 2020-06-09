@@ -13,6 +13,7 @@ export default class List extends Lightning.Component {
     }
 
     _init() {
+      console.log("List init 1");
         this._index = 0;
     }
 
@@ -38,12 +39,14 @@ export default class List extends Lightning.Component {
     }
 
     set movies(v) {
+      console.log("List set movies 1");
         // we add an array of object with type: Item
         // this.tag("Levels").children = v.map((el, idx)=>{
         //     return {
         //         type: Item
         //     };
         // });
+
     }
 
     get items() {

@@ -1,107 +1,142 @@
-import { Lightning, Utils, Router } from 'wpe-lightning-sdk';
+import {
+  Lightning,
+  Utils,
+  Router
+} from 'wpe-lightning-sdk';
 import provider from "./lib/data-provider";
 import routes from "./lib/routes";
-import {init as initApi} from "./lib/Api"
-import {Splash} from "./pages";
+import {
+  init as initApi
+} from "./lib/api"
+import {
+  Splash,
+  Menu
+} from "./pages";
 
 export default class App extends Lightning.Component {
 
-    static getFonts() {
-        return [
-            {family: 'SourceSansPro-Regular', url: Utils.asset('fonts/SourceSansPro-Regular.ttf'), descriptors: {}},
-            {family: 'SourceSansPro-Black', url: Utils.asset('fonts/SourceSansPro-Black.ttf'), descriptors: {}},
-            {family: 'SourceSansPro-Bold', url: Utils.asset('fonts/SourceSansPro-Bold.ttf'), descriptors: {}}
-        ];
-    }
+  static getFonts() {
+    //console.log("App fonts 1");
+    return [{
+        family: 'SourceSansPro-Regular',
+        url: Utils.asset('fonts/SourceSansPro-Regular.ttf'),
+        descriptors: {}
+      },
+      {
+        family: 'SourceSansPro-Black',
+        url: Utils.asset('fonts/SourceSansPro-Black.ttf'),
+        descriptors: {}
+      },
+      {
+        family: 'SourceSansPro-Bold',
+        url: Utils.asset('fonts/SourceSansPro-Bold.ttf'),
+        descriptors: {}
+      }
+    ];
+  }
 
-    // when App instance is initialized we call the routes
-    // this will setup all pages and attach them to there route
-    _setup() {
-        initApi(this.stage);
-        Router.startRouter({
-            appInstance: this, provider, routes
-        });
-    }
+  static _states() {
+    //console.log("App states 1");
+    return [
+      class Loading extends this {
+        $enter() {
+          this.tag("Loading").visible = true;
+        }
 
-    static _template() {
-        return {
-            Pages: {
-                forceZIndexContext: true, w: 1000
-            },
-            Splash:{
-               type: Splash
-            },
-            Widgets: {
-                Menu:{
-                    // @todo; this is an extra assignment,
-                    // add Menu
-                }
-            },
-            Loading: {
+        $exit() {
+          this.tag("Loading").visible = false;
+        }
+      },
+      class Widgets extends this {
+        $enter(args, widget) {
+          // store widget reference
+          this._widget = widget;
 
-            },
-            Wrapper:{
-                Label:{
-                    text:{}
-                }
-            }
-        };
-    }
+          // since it's possible that this behaviour
+          // is non-remote driven we force a recalculation
+          // of the focuspath
+          this._refocus();
+        }
 
-    _handleEnter(){
-        // call
-    }
+        _getFocused() {
+          // we delegate focus to selected widget
+          // so it can consume remotecontrol presses
+          return this._widget;
+        }
+      }
+    ];
+  }
 
-    _getFocused(){
-        return this.tag("Splash")
-    }
+  static _template() {
+    //console.log("App template 1");
+    return {
+      Pages: {
+        forceZIndexContext: true,
+        w: 1000
+      },
+      /*
+      Splash:{
+         type: Splash
+      },
+      */
+      Widgets: {
+        Menu: {
+          type: Menu
+        }
+      },
+      Loading: {
 
-    _handleLeft(){
-        this.setIndex(this.index - 1);
-    }
+      },
+      Wrapper: {
+        Label: {
+          text: {}
+        }
+      }
+    };
+  }
 
-     static _states() {
-        return [
-            class Loading extends this {
-                $enter() {
-                    this.tag("Loading").visible = true;
-                }
+  // when App instance is initialized we call the routes
+  // this will setup all pages and attach them to there route
+  _setup() {
+    console.log("App setup 1");
+    initApi(this.stage);
+    Router.startRouter({
+      appInstance: this,
+      provider,
+      routes
+    });
+    Router.navigate("splash");
+  }
 
-                $exit() {
-                    this.tag("Loading").visible = false;
-                }
-            },
-            class Widgets extends this {
-                $enter(args, widget) {
-                    // store widget reference
-                    this._widget = widget;
+  _handleEnter() {
+    console.log("App enter 1");
+    // call
+  }
+/*
+  _getFocused() {
+    console.log("App focus 1");
+    return this.tag("Splash")
+  }
+*/
+  _handleLeft() {
+    console.log("App left 1");
+    this.setIndex(this.index - 1);
+  }
 
-                    // since it's possible that this behaviour
-                    // is non-remote driven we force a recalculation
-                    // of the focuspath
-                    this._refocus();
-                }
+  // tell page router where to store the pages
+  get pages() {
+    //console.log("App pages 1");
+    return this.tag("Pages");
+  }
 
-                _getFocused() {
-                    // we delegate focus to selected widget
-                    // so it can consume remotecontrol presses
-                    return this._widget;
-                }
-            }
-        ];
-    }
+  get widgets() {
+    //console.log("App widgets 1");
+    return this.tag("Widgets")
+  }
 
-    // tell page router where to store the pages
-    get pages() {
-        return this.tag("Pages");
-    }
-
-    get widgets(){
-        return this.tag("Widgets")
-    }
-
-    _getFocused() {
-        return Router.getActivePage();
-    }
+  _getFocused() {
+    //console.log("App focused 1");
+    return Router.getActivePage();
+  }
 
 }
