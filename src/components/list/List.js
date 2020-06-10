@@ -1,4 +1,5 @@
 import {Lightning} from "wpe-lightning-sdk";
+import Item from "../item/Item";
 
 export default class List extends Lightning.Component {
     static _template() {
@@ -6,7 +7,7 @@ export default class List extends Lightning.Component {
             Label: {
                 text: {text: '', fontFace: 'Magra'}
             },
-            Movies: {
+            Items: {
                 y: 75
             }
         }
@@ -38,8 +39,20 @@ export default class List extends Lightning.Component {
         // @todo: update list title
     }
 
-    set movies(v) {
+    set items(value) {
       console.log("List set movies 1");
+      /*
+      for (var i = 0; i < value.results.length; i++) {
+        console.log(value.results[i].original_title);
+      }
+      */
+
+      this.tag("Items").children = value.results.map((el, idx)=>{
+           return {
+               type: Item, item : el, x: idx*250
+           };
+    });
+
         // we add an array of object with type: Item
         // this.tag("Levels").children = v.map((el, idx)=>{
         //     return {

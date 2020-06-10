@@ -12,14 +12,17 @@ export default class Main extends Lightning.Component {
       scale: 0.5,
       Lists: {
         x: 100,
-        y: 560,
+        y: 1500,
         zIndex: 3,
-        type: List,
+        type: List
       },
       Logo: {
-        src: Utils.asset("images/logo-large.png"),
-        x: 960,
-        y: 640,
+        mountX: 0.5,
+        mountY: 1,
+        x: 500,
+        y: 200,
+        scale: 2,
+        src: Utils.asset('images/logo.png'),
       },
     };
   }
@@ -44,11 +47,7 @@ export default class Main extends Lightning.Component {
     console.log("Main set movies 1");
 
     x.then((value) => {
-
-      for (var i = 0; i < value.results.length; i++) {
-        console.log(value.results[i].original_title);
-      }
-
+      this.tag("Lists").items = value;
     });
   }
 
