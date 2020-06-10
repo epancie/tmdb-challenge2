@@ -1,6 +1,8 @@
 import {Lightning} from "wpe-lightning-sdk";
 import Item from "../item/Item";
 
+const itmeSpace = 250
+
 export default class List extends Lightning.Component {
     static _template() {
         return {
@@ -20,10 +22,25 @@ export default class List extends Lightning.Component {
 
     _handleLeft() {
         // @todo: update index and call setIndex
+        if (this._index > 0) {
+            this.setIndex(this._index-1)
+          }
+        else{
+            this.setIndex(0)
+        }
+        console.log("_handleLeft Idx:"+ this._index);        
     }
 
     _handleRight() {
         // @todo: update index and call setIndex
+        if (this._index < this.items.length - 1) {
+            this.setIndex(this._index+1)
+          }
+        else{
+            this.setIndex(this.items.length - 1)
+        }
+        console.log("_handleRight Idx:"+ this._index);
+        
     }
 
     setIndex(index) {
@@ -33,10 +50,14 @@ export default class List extends Lightning.Component {
          * that stores index and position movie component to focus
          * on selected item
          */
+        this._index = index
+        this.tag('Items').setSmooth('x', this._index * -itmeSpace)
+        
     }
 
     set label(v) {
         // @todo: update list title
+        
     }
 
     set items(value) {
@@ -49,7 +70,7 @@ export default class List extends Lightning.Component {
 
       this.tag("Items").children = value.results.map((el, idx)=>{
            return {
-               type: Item, item : el, x: idx*250
+               type: Item, item : el, x: idx*itmeSpace
            };
     });
 
@@ -63,15 +84,17 @@ export default class List extends Lightning.Component {
     }
 
     get items() {
-        return this.tag("Levels").children;
+        return this.tag("Items").children;
     }
 
     get activeItem() {
         // @todo: return selected item
+        return this.tag('Items').children[this._index];
     }
 
     _getFocused() {
         // @todo:
         // return activeItem
+        return this.activeItem;
     }
 }

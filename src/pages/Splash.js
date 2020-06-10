@@ -123,7 +123,7 @@ export default class Splash extends Lightning.Component {
   _handleEnter() {
     console.log("Splash enter 1");
     Router.navigate("movies");
-    this._unfocus();
+    //this._unfocus();
   }
 
 }
